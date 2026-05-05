@@ -1,0 +1,118 @@
+@import "tailwindcss";
+
+/* --- Tailwind v4 全新主题配置语法 --- */
+@theme {
+  /* 碳纤维色系 */
+  --color-carbon-black: #000000;
+  --color-carbon-dark: #111111;
+  --color-carbon-medium: #1a1a1a;
+  --color-carbon-light: #2a2a2a;
+  
+  /* 点缀色 */
+  --color-accent-silver: #c0c0c0;
+  --color-accent-green: #A0F900;
+  --color-accent-orange: #ff7b00;
+
+  /* 字体 */
+  --font-sans: "Inter", sans-serif;
+  --font-mono: "Roboto Mono", monospace;
+  
+  /* 自定义高度 */
+  --spacing-128: 32rem;
+}
+
+/* --- Tailwind v4 自定义工具类写法 --- */
+@utility text-shadow {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+@utility bg-carbon-texture {
+  background-image: url('https://p3-doubao-search-sign.byteimg.com/labis/image/9fa68967af3942c6d7cbc0860fe37d3e~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1791614905&x-signature=7xtxXK5mHpUnQWrvFdtFRvJdzbc%3D');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+@utility bg-carbon-texture-overlay {
+  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.9));
+}
+
+@utility border-dashed {
+  border-style: dashed;
+}
+
+@utility animate-fade-in {
+  animation: fadeIn 0.8s ease-in-out forwards;
+}
+
+@utility animate-slide-up {
+  animation: slideUp 0.6s ease-out forwards;
+}
+
+@utility animate-pulse-slow {
+  animation: pulse 3s infinite;
+}
+
+@utility pre-animation {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+/* --- 动画关键帧 --- */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* --- 全局基础设定 --- */
+body {
+  @apply bg-carbon-black text-white font-sans min-h-screen;
+}
+/* --- 顶级 B2B 博客正文排版优化 --- */
+.wp-content p {
+  margin-bottom: 2em;
+  color: hsl(var(--muted-foreground)); /* 继承极客灰 */
+}
+.wp-content h2 {
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: hsl(var(--foreground));
+  margin-top: 2.5em;
+  margin-bottom: 1em;
+  letter-spacing: -0.025em;
+}
+.wp-content h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: hsl(var(--foreground));
+  margin-top: 2em;
+  margin-bottom: 1em;
+}
+.wp-content ul {
+  list-style-type: square;
+  padding-left: 1.5em;
+  margin-bottom: 2em;
+  color: hsl(var(--muted-foreground));
+}
+.wp-content li {
+  margin-bottom: 0.75em;
+}
+.wp-content strong, .wp-content b {
+  color: hsl(var(--foreground)); /* 加粗字体变白，突出显示 */
+  font-weight: 700;
+}
+.wp-content img {
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 2.5em 0;
+}
