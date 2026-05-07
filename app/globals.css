@@ -27,14 +27,14 @@
 }
 
 @utility bg-carbon-texture {
-  background-image: url('https://p3-doubao-search-sign.byteimg.com/labis/image/9fa68967af3942c6d7cbc0860fe37d3e~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1791614905&x-signature=7xtxXK5mHpUnQWrvFdtFRvJdzbc%3D');
+  background-image: url('/images/bg.png ');  /* 改成你的本地路径和文件名 */
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
 }
 
 @utility bg-carbon-texture-overlay {
-  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.9));
+  background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.9));
 }
 
 @utility border-dashed {
