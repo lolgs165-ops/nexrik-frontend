@@ -2,7 +2,7 @@
 import Link from 'next/link'
 import { ArrowLeft, User, Clock, ShieldCheck, SearchCheck, MessageCircle, ChevronRight, MapPin, Mail } from 'lucide-react'
 
-// 1. 获取数据的核心函数
+// 1. 获取数据的核心函数（已修正环境变量 + ISR）
 async function getPost(slug: string) {
   const query = `
     query GetPostBySlug($slug: String!) {
@@ -20,11 +20,12 @@ async function getPost(slug: string) {
   `;
   
   try {
-    const res = await fetch(process.env.NEXT_PUBLIC_WORDPRESS_API_URL as string, {
+    // 使用服务端环境变量，并开启 ISR 缓存
+    const res = await fetch(process.env.WORDPRESS_API_URL as string, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ query, variables: { slug } }),
-      cache: 'no-store'
+      next: { revalidate: 3600 } // 每小时重新验证一次
     });
     const json = await res.json();
     return { error: null, data: json.data?.posts?.nodes[0] };
