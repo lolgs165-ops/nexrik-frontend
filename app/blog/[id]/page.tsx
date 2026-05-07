@@ -107,7 +107,7 @@ export default async function BlogPost({ params }: { params: Promise<{ id: strin
                 <User className="w-6 h-6" />
               </div>
               <div className="text-xs uppercase tracking-widest">
-                <p className="font-bold text-foreground mb-1 text-sm">Alex Chen</p>
+                <p className="font-bold text-foreground mb-1 text-sm">Alex Li</p>
                 <p className="text-accent-green">Lead Engineer & QC Director</p>
               </div>
             </div>

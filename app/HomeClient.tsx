@@ -78,7 +78,7 @@ const handleRfqSubmit = async (e: React.FormEvent) => {
 
   const formData = new FormData();
   // ⚠️ 这里填写你的 Contact Form 7 表单 ID
-  formData.append('_wpcf7', 'elal0d3');
+  formData.append('_wpcf7', '51dec9e');
 
   // 映射前端字段 → CF7 字段名
   const getValue = (name: string) =>
@@ -106,7 +106,7 @@ const handleRfqSubmit = async (e: React.FormEvent) => {
 
   try {
     const response = await fetch(
-      'https://api.nexrik.com/wp-json/contact-form-7/v1/contact-forms/elal0d3/feedback',
+      'https://api.nexrik.com/wp-json/contact-form-7/v1/contact-forms/51dec9e/feedback',
       {
         method: 'POST',
         body: formData,
@@ -242,7 +242,7 @@ const handleRfqSubmit = async (e: React.FormEvent) => {
               <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-accent-green/10 to-transparent rounded-bl-full"></div>
               <div className="text-accent-green text-4xl mb-6"><i className="fa fa-cogs"></i></div>
               <h3 className="text-2xl font-bold text-white mb-4">
-                Directed by <span className="text-accent-green">Alex Chen</span>
+                Directed by <span className="text-accent-green">Alex Li</span>
               </h3>
               <p className="text-accent-green text-xs font-bold uppercase tracking-widest mb-6">
                 Lead Engineer | 10+ Year Toray Composite Experience
