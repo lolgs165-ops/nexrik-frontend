@@ -78,7 +78,7 @@ const handleRfqSubmit = async (e: React.FormEvent) => {
 
   const formData = new FormData();
   // ⚠️ 这里填写你的 Contact Form 7 表单 ID
-  formData.append('_wpcf7', '51dec9e');
+  formData.append('_wpcf7', '35');
 
   // 映射前端字段 → CF7 字段名
   const getValue = (name: string) =>
@@ -106,7 +106,7 @@ const handleRfqSubmit = async (e: React.FormEvent) => {
 
   try {
     const response = await fetch(
-      'https://api.nexrik.com/wp-json/contact-form-7/v1/contact-forms/51dec9e/feedback',
+      'https://api.nexrik.com/wp-json/contact-form-7/v1/contact-forms/35/feedback',
       {
         method: 'POST',
         body: formData,
