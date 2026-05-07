@@ -68,19 +68,67 @@ export default function HomeClient({
   const removeFile = (indexToRemove: number) => {
     setSelectedFiles(prev => prev.filter((_, index) => index !== indexToRemove));
   };
-  const handleRfqSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setFormStatus('submitting');
-    try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
+const handleRfqSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setFormStatus('submitting');
+
+  // 获取表单数据
+  const formElement = formRef.current;
+  if (!formElement) return;
+
+  const formData = new FormData();
+  // ⚠️ 这里填写你的 Contact Form 7 表单 ID
+  formData.append('_wpcf7', 'elal0d3');
+
+  // 映射前端字段 → CF7 字段名
+  const getValue = (name: string) =>
+    (formElement.querySelector(`[name="${name}"]`) as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement)?.value || '';
+
+  formData.append('your-name', getValue('name'));
+  formData.append('your-email', getValue('email'));
+  formData.append('company', getValue('company'));
+
+  const projectType = (formElement.querySelector('[name="projectType"]:checked') as HTMLInputElement)?.value;
+  if (projectType) formData.append('project-type', projectType);
+
+  formData.append('quantity', getValue('quantity'));
+
+  // 映射 select 字段（注意前端 select 的 name 属性）
+  formData.append('process', getValue('process'));
+  formData.append('surface-pattern', getValue('pattern'));
+  formData.append('material-grade', getValue('material'));
+  formData.append('surface-finish', getValue('finish'));
+
+  formData.append('specs', getValue('specs'));
+
+  // 文件上传暂不支持通过 CF7 REST API 直接发送，可保留文件选择，但本次不发送
+  // 后续可扩展专用文件上传接口
+
+  try {
+    const response = await fetch(
+      'https://api.nexrik.com/wp-json/contact-form-7/v1/contact-forms/elal0d3/feedback',
+      {
+        method: 'POST',
+        body: formData,
+      }
+    );
+
+    const result = await response.json();
+
+    if (result.status === 'mail_sent') {
       setRefNumber('NX-' + Math.floor(100000 + Math.random() * 900000));
       setFormStatus('success');
       setSelectedFiles([]);
-      if (formRef.current) formRef.current.reset();
-    } catch {
+      formRef.current?.reset();
+    } else {
+      console.error('CF7 submission error:', result);
       setFormStatus('error');
     }
-  };
+  } catch (error) {
+    console.error('Network error:', error);
+    setFormStatus('error');
+  }
+};
 
   return (
     <main className="relative">
