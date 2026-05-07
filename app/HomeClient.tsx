@@ -80,6 +80,9 @@ const handleRfqSubmit = async (e: React.FormEvent) => {
   // ⚠️ 这里填写你的 Contact Form 7 表单 ID
   formData.append('_wpcf7', '35');
 
+  // 👇 增加这行终极暗号！告诉 CF7 我们是合法的前端页面
+  formData.append('_wpcf7_unit_tag', 'wpcf7-f35-p0-o1');
+  
   // 映射前端字段 → CF7 字段名
   const getValue = (name: string) =>
     (formElement.querySelector(`[name="${name}"]`) as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement)?.value || '';
