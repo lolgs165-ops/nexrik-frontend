@@ -184,14 +184,99 @@ export default function BlogListClient({ initialArticles }: { initialArticles: A
         </div>
       </section>
 
-      {/* 底部订阅区（保持原样） */}
+      {/* 订阅区 */}
       <section className="py-16 bg-carbon-dark">
-        {/* ... 与之前完全一致，省略 ... */}
+        <div className="container mx-auto px-4 max-w-3xl text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white uppercase tracking-tight">
+            Stay Updated
+          </h2>
+          <p className="text-gray-400 mb-8 max-w-xl mx-auto">
+            Get the latest composite engineering insights delivered to your inbox. No spam, just technical knowledge.
+          </p>
+          <form className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+            <input
+              type="email"
+              placeholder="Enter your email"
+              className="flex-1 bg-carbon-medium border border-carbon-light rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:border-accent-green focus:ring-1 focus:ring-accent-green outline-none text-sm"
+            />
+            <button
+              type="button"
+              className="bg-accent-green text-carbon-black px-8 py-3 rounded-lg font-bold text-sm hover:bg-white transition-all uppercase tracking-wider flex items-center justify-center gap-2"
+            >
+              Subscribe <i className="fa fa-arrow-right"></i>
+            </button>
+          </form>
+        </div>
       </section>
 
-      {/* 页脚（保持原样） */}
+      {/* 页脚（与主页完全一致） */}
       <footer className="bg-[#050505] border-t border-white/15 py-16">
-        {/* ... 与之前完全一致，省略 ... */}
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-14">
+            <div className="lg:col-span-1">
+              <Link href="/" className="text-2xl font-bold tracking-tight mb-5 inline-block">
+                <span className="text-white">NEX</span><span className="text-[#a0f900]">RIK</span>
+              </Link>
+              <p className="text-gray-300 text-sm leading-relaxed mb-6">Precision carbon fiber solutions. Backed by US compliance, driven by direct engineering expertise from Asia-Pacific.</p>
+              <div className="flex gap-3">
+                <a href="#" className="w-8 h-8 rounded-lg bg-white/5 border border-white/15 flex items-center justify-center text-gray-400 hover:text-[#a0f900] hover:border-[#a0f900]/30 transition-all text-sm">
+                  <i className="fa fa-linkedin"></i>
+                </a>
+                <a href="https://wa.me/+8618566177545" className="w-8 h-8 rounded-lg bg-white/5 border border-white/15 flex items-center justify-center text-gray-400 hover:text-[#a0f900] hover:border-[#a0f900]/30 transition-all text-sm">
+                  <i className="fa fa-whatsapp"></i>
+                </a>
+              </div>
+            </div>
+            <div>
+              <h4 className="text-xs font-bold uppercase tracking-widest text-gray-300 mb-5">Navigation</h4>
+              <ul className="space-y-3 text-sm">
+                <li><Link href="/#about" className="text-gray-300 hover:text-[#a0f900] transition-colors">The Nexrik Model</Link></li>
+                <li><Link href="/#products" className="text-gray-300 hover:text-[#a0f900] transition-colors">Capabilities</Link></li>
+                <li><Link href="/#technical" className="text-gray-300 hover:text-[#a0f900] transition-colors">Material Data</Link></li>
+                <li><Link href="/blog" className="text-gray-300 hover:text-[#a0f900] transition-colors">Technical Articles</Link></li>
+                <li><Link href="/#rfq" className="text-gray-300 hover:text-[#a0f900] transition-colors">Get a Quote</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-xs font-bold uppercase tracking-widest text-gray-300 mb-5">Industries</h4>
+              <ul className="space-y-3 text-sm">
+                {['Aerospace & Defense', 'Autonomous Systems (UAV)', 'Performance Automotive', 'Medical Devices', 'Industrial Robotics', 'Precision Instrumentation'].map(l => (
+                  <li key={l}><Link href="/#products" className="text-gray-300 hover:text-[#a0f900] transition-colors">{l}</Link></li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-xs font-bold uppercase tracking-widest text-gray-300 mb-5">Contact</h4>
+              <ul className="space-y-4 text-sm">
+                <li className="flex items-start gap-3 text-gray-300">
+                  <i className="fa fa-map-marker text-[#a0f900]/80 mt-0.5 flex-shrink-0"></i>
+                  <span>Nexrik LLC, Wyoming, USA<br /><span className="text-gray-400 text-xs">Engineering Office: Asia Pacific</span></span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <i className="fa fa-envelope text-[#a0f900]/80 flex-shrink-0"></i>
+                  <a href="mailto:info@nexrik.com" className="text-gray-300 hover:text-[#a0f900] transition-colors">info@nexrik.com</a>
+                </li>
+                <li className="flex items-center gap-3">
+                  <i className="fa fa-whatsapp text-[#a0f900]/80 flex-shrink-0"></i>
+                  <a href="https://wa.me/+8618566177545" className="text-gray-300 hover:text-[#a0f900] transition-colors">+86 185 6617 7545</a>
+                </li>
+              </ul>
+              <div className="mt-6 pt-6 border-t border-white/15">
+                <Link href="/#rfq" className="inline-flex items-center gap-2 bg-[#a0f900] text-black px-5 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider hover:bg-[#b8ff1a] transition-all">
+                  <i className="fa fa-file-text-o"></i> Get a Quote
+                </Link>
+              </div>
+            </div>
+          </div>
+          <div className="border-t border-white/15 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-gray-400 text-xs font-mono">© 2026 NEXRIK LLC. All rights reserved.</p>
+            <div className="flex gap-6 text-xs">
+              <a href="#" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</a>
+              <a href="#" className="text-gray-400 hover:text-white transition-colors">Terms of Service</a>
+              <a href="#" className="text-gray-400 hover:text-white transition-colors">NDA Template</a>
+            </div>
+          </div>
+        </div>
       </footer>
     </main>
   );
