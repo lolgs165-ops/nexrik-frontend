@@ -505,80 +505,162 @@ const handleRfqSubmit = async (e: React.FormEvent) => {
         </div>
       </section>
 
-      {/* --- RFQ 模块 --- */}
-      <section id="rfq" className="py-24 bg-carbon-black">
-        <div className="container mx-auto px-4 max-w-4xl">
-          <div className="text-center mb-14 animate-on-scroll pre-animation">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 uppercase tracking-tight">Request an Engineering Quote</h2>
-            <p className="text-gray-400 text-sm tracking-wide max-w-2xl mx-auto leading-relaxed">Our engineering team will review for DFM and respond with a detailed proposal within 24 hours.</p>
+{/* --- RFQ 模块 (纵向紧凑版) --- */}
+<section id="rfq" className="py-16 bg-carbon-black">
+  <div className="container mx-auto px-4 max-w-3xl">
+    <div className="text-center mb-12 animate-on-scroll pre-animation">
+      <h2 className="text-3xl md:text-4xl font-bold mb-4 uppercase tracking-tight">
+        Request an Engineering Quote
+      </h2>
+      <p className="text-gray-400 text-sm tracking-wide max-w-xl mx-auto leading-relaxed">
+        Our engineering team will review for DFM and respond with a detailed proposal within 24 hours.
+      </p>
+    </div>
+
+    {formStatus !== 'success' ? (
+      <div className="animate-on-scroll pre-animation">
+        <form ref={formRef} onSubmit={handleRfqSubmit} className="space-y-6">
+          <div className="bg-carbon-medium rounded-xl border border-carbon-light p-5 md:p-6 space-y-6">
+            {/* 1. Contact Information */}
+            <div>
+              <h3 className="text-accent-green text-xs font-bold uppercase tracking-widest mb-4 pb-2 border-b border-carbon-light/50">
+                1. Contact Information
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label className="block text-gray-300 mb-2 text-sm font-medium">Your Name *</label>
+                  <input type="text" name="name" required placeholder="John Smith"
+                    className="w-full bg-carbon-dark border border-carbon-light rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:border-accent-green focus:ring-1 focus:ring-accent-green outline-none transition-all text-sm" />
+                </div>
+                <div>
+                  <label className="block text-gray-300 mb-2 text-sm font-medium">Business Email *</label>
+                  <input type="email" name="email" required placeholder="john@company.com"
+                    className="w-full bg-carbon-dark border border-carbon-light rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:border-accent-green focus:ring-1 focus:ring-accent-green outline-none transition-all text-sm" />
+                </div>
+              </div>
+              <div>
+                <label className="block text-gray-300 mb-2 text-sm font-medium">Company Name (Optional)</label>
+                <input type="text" name="company" placeholder="Your Company Ltd."
+                  className="w-full bg-carbon-dark border border-carbon-light rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:border-accent-green focus:ring-1 focus:ring-accent-green outline-none transition-all text-sm" />
+              </div>
+            </div>
+
+            {/* 2. Project Scope */}
+            <div>
+              <h3 className="text-accent-green text-xs font-bold uppercase tracking-widest mb-4 pb-2 border-b border-carbon-light/50">
+                2. Project Scope
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-gray-300 mb-3 text-sm font-medium">Project Type *</label>
+                  <div className="flex gap-3">
+                    <label className="flex items-center space-x-2 bg-carbon-dark p-3 rounded-lg border border-carbon-light cursor-pointer hover:border-accent-green transition-all text-xs flex-1">
+                      <input type="radio" name="projectType" value="prototype" className="accent-accent-green" defaultChecked />
+                      <span className="text-gray-300">Prototype / Small Batch</span>
+                    </label>
+                    <label className="flex items-center space-x-2 bg-carbon-dark p-3 rounded-lg border border-carbon-light cursor-pointer hover:border-accent-green transition-all text-xs flex-1">
+                      <input type="radio" name="projectType" value="production" className="accent-accent-green" />
+                      <span className="text-gray-300">Mass Production</span>
+                    </label>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-gray-300 mb-2 text-sm font-medium">Estimated Quantity *</label>
+                  <input type="text" name="quantity" required placeholder="e.g., 5 prototypes, or 1,000 units/year"
+                    className="w-full bg-carbon-dark border border-carbon-light rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:border-accent-green focus:ring-1 focus:ring-accent-green outline-none transition-all text-sm" />
+                </div>
+              </div>
+            </div>
+
+            {/* 3. Composite Preferences & Details */}
+            <div>
+              <h3 className="text-accent-green text-xs font-bold uppercase tracking-widest mb-4 pb-2 border-b border-carbon-light/50">
+                3. Composite Preferences
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+                {['Surface Pattern', 'Surface Finish'].map((label, idx) => (
+                  <div key={idx}>
+                    <label className="block text-gray-400 mb-2 text-xs">{label}</label>
+                    <div className="relative">
+                      <select className="w-full bg-carbon-dark border border-carbon-light rounded-lg px-4 py-3 text-white appearance-none focus:border-accent-green focus:ring-1 focus:ring-accent-green outline-none text-xs cursor-pointer pr-10">
+                        <option>Recommend for me / Not sure</option>
+                        {label === 'Surface Pattern' && ['3K Twill', '3K Plain', 'Forged', 'UD'].map(v => <option key={v}>{v}</option>)}
+                        {label === 'Surface Finish' && ['Glossy', 'Matte', 'Raw / Machined'].map(v => <option key={v}>{v}</option>)}
+                      </select>
+                      <i className="fa fa-angle-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none"></i>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mb-5">
+                <label className="block text-gray-300 mb-2 text-sm font-medium">Additional Details (Optional)</label>
+                <textarea name="specs" rows={4} placeholder="Tolerances, target budget, delivery dates..."
+                  className="w-full bg-carbon-dark border border-carbon-light rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:border-accent-green focus:ring-1 focus:ring-accent-green outline-none text-sm resize-none transition-all"></textarea>
+              </div>
+
+              <div>
+                <div onClick={() => fileInputRef.current?.click()} className="border-2 border-dashed border-carbon-light hover:border-accent-green rounded-xl p-5 text-center cursor-pointer transition-all bg-carbon-dark/30 hover:bg-carbon-dark/50 group">
+                  <i className="fa fa-cloud-upload text-3xl text-gray-500 group-hover:text-accent-green mb-2 transition-colors"></i>
+                  <p className="text-gray-200 font-bold uppercase text-xs tracking-widest">Upload CAD Files</p>
+                  <p className="text-gray-500 text-xs mt-1">STEP, IGES, SolidWorks, PDF, DWG — secure & confidential</p>
+                  <input type="file" ref={fileInputRef} className="hidden" multiple onChange={handleFileChange} />
+                </div>
+                {selectedFiles.length > 0 && (
+                  <div className="mt-3 space-y-2">
+                    {selectedFiles.map((f, i) => (
+                      <div key={i} className="flex items-center justify-between bg-carbon-dark p-3 rounded-lg border border-carbon-light">
+                        <span className="text-sm font-mono text-gray-300 truncate"><i className="fa fa-file-text-o mr-3 text-gray-400"></i>{f.name}</span>
+                        <button type="button" onClick={() => removeFile(i)} className="text-gray-400 hover:text-red-400 ml-4 transition-colors"><i className="fa fa-times"></i></button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
 
-          {formStatus !== 'success' ? (
-            <div className="animate-on-scroll pre-animation">
-              <form ref={formRef} onSubmit={handleRfqSubmit} className="bg-carbon-medium rounded-xl border border-carbon-light p-8 md:p-12 shadow-2xl">
-                <h3 className="text-accent-green text-xs font-bold uppercase tracking-widest mb-6 border-b border-carbon-light pb-2">1. Contact Information</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                  <div><label className="block text-gray-300 mb-1.5 font-medium text-sm">Your Name *</label><input type="text" name="name" required className="w-full bg-carbon-dark border border-carbon-light rounded-lg px-4 py-3 text-white focus:border-accent-green focus:ring-1 focus:ring-accent-green outline-none text-sm" /></div>
-                  <div><label className="block text-gray-300 mb-1.5 font-medium text-sm">Business Email *</label><input type="email" name="email" required className="w-full bg-carbon-dark border border-carbon-light rounded-lg px-4 py-3 text-white focus:border-accent-green focus:ring-1 focus:ring-accent-green outline-none text-sm" /></div>
-                </div>
-                <div className="mb-10"><label className="block text-gray-300 mb-1.5 font-medium text-sm">Company Name (Optional)</label><input type="text" name="company" className="w-full bg-carbon-dark border border-carbon-light rounded-lg px-4 py-3 text-white focus:border-accent-green focus:ring-1 focus:ring-accent-green outline-none text-sm" /></div>
-
-                <h3 className="text-accent-green text-xs font-bold uppercase tracking-widest mb-6 border-b border-carbon-light pb-2">2. Project Scope</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                  <div>
-                    <label className="block text-gray-300 mb-1.5 font-medium text-sm">Project Type *</label>
-                    <div className="flex flex-col sm:flex-row gap-3">
-                      <label className="flex items-center space-x-2 bg-carbon-dark p-3 rounded-lg border border-carbon-light cursor-pointer hover:border-accent-green transition-all text-xs flex-1"><input type="radio" name="projectType" value="prototype" className="accent-accent-green" defaultChecked /><span className="text-gray-300">Prototype / Small Batch</span></label>
-                      <label className="flex items-center space-x-2 bg-carbon-dark p-3 rounded-lg border border-carbon-light cursor-pointer hover:border-accent-green transition-all text-xs flex-1"><input type="radio" name="projectType" value="production" className="accent-accent-green" /><span className="text-gray-300">Mass Production</span></label>
-                    </div>
-                  </div>
-                  <div><label className="block text-gray-300 mb-1.5 font-medium text-sm">Estimated Quantity *</label><input type="text" name="quantity" placeholder="e.g., 5 prototypes" required className="w-full bg-carbon-dark border border-carbon-light rounded-lg px-4 py-3 text-white focus:border-accent-green outline-none text-sm" /></div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {['Surface Pattern', 'Surface Finish'].map((label, idx) => (
-                    <div key={idx}>
-                      <label className="block text-gray-400 mb-1.5 text-xs">{label}</label>
-                      <div className="relative">
-                        <select className="w-full bg-carbon-dark border border-carbon-light rounded-lg px-3 py-2.5 text-white appearance-none focus:border-accent-green outline-none text-xs cursor-pointer">
-                          <option>Recommend for me / Not sure</option>
-                          {label === 'Surface Pattern' && ['3K Twill', '3K Plain', 'Forged', 'UD'].map(v => <option key={v}>{v}</option>)}
-                          {label === 'Surface Finish' && ['Glossy', 'Matte', 'Raw / Machined'].map(v => <option key={v}>{v}</option>)}
-                        </select>
-                        <i className="fa fa-angle-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none"></i>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="mb-8"><label className="block text-gray-300 mb-1.5 font-medium text-sm">Additional Details</label><textarea name="specs" rows={4} className="w-full bg-carbon-dark border border-carbon-light rounded-lg px-4 py-3 text-white focus:border-accent-green outline-none text-sm" placeholder="Tolerances, target budget, delivery dates..."></textarea></div>
-
-                <div className="mb-10 text-center">
-                  <div onClick={() => fileInputRef.current?.click()} className="border-2 border-dashed border-carbon-light hover:border-accent-green rounded-xl p-8 cursor-pointer transition-all bg-carbon-black/30 group">
-                    <i className="fa fa-cloud-upload text-3xl text-gray-500 group-hover:text-accent-green mb-2"></i>
-                    <p className="text-gray-300 font-bold uppercase text-xs tracking-widest">Upload CAD Files</p>
-                    <input type="file" ref={fileInputRef} className="hidden" multiple onChange={handleFileChange} />
-                  </div>
-                  {selectedFiles.length > 0 && (
-                    <div className="mt-4 space-y-2">{selectedFiles.map((f, i) => (
-                      <div key={i} className="flex items-center justify-between bg-carbon-dark p-3 rounded-lg border border-carbon-light"><span className="text-xs font-mono text-gray-300 truncate">{f.name}</span><button type="button" onClick={() => removeFile(i)} className="text-red-500 hover:text-red-400 transition-colors"><i className="fa fa-times"></i></button></div>
-                    ))}</div>
-                  )}
-                </div>
-
-                <div className="text-center"><button type="submit" disabled={formStatus === 'submitting'} className="w-full sm:w-auto px-16 py-4 bg-accent-green text-carbon-black rounded-lg font-bold text-sm hover:bg-white disabled:opacity-50 transition-all uppercase tracking-[0.2em]">{formStatus === 'submitting' ? 'Processing...' : 'Submit for Review'}</button><p className="text-gray-500 text-[10px] mt-4 uppercase tracking-widest"><i className="fa fa-lock mr-1"></i> Strictly Confidential under NDA</p></div>
-              </form>
-            </div>
-          ) : (
-            <div className="max-w-2xl mx-auto bg-carbon-medium p-16 rounded-2xl border border-accent-green text-center animate-slide-up shadow-[0_0_50px_rgba(160,249,0,0.1)]">
-              <i className="fa fa-check-circle text-5xl text-accent-green mb-6"></i>
-              <h3 className="text-2xl font-bold mb-4 uppercase tracking-[0.1em] text-white">RFQ Received</h3>
-              <p className="text-gray-400 mb-8 text-sm">We&apos;ll respond within 24 hours. REF: <span className="text-accent-green font-mono">{refNumber}</span></p>
-              <button onClick={() => setFormStatus('idle')} className="text-gray-400 hover:text-accent-green font-bold text-xs uppercase underline tracking-widest">Submit Another Request</button>
+          {formStatus === 'error' && (
+            <div className="p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-sm text-center">
+              <i className="fa fa-exclamation-triangle mr-2"></i> Submission failed. Please email us directly at alex@nexrik.com.
             </div>
           )}
+
+         <div className="text-center">
+          <button type="submit" disabled={formStatus === 'submitting'}
+            className="w-full sm:w-auto px-16 py-4 bg-accent-green text-carbon-black rounded-lg font-bold text-sm hover:bg-accent-green/90 disabled:opacity-50 transition-all uppercase tracking-[0.2em] shadow-lg mx-auto">
+            {formStatus === 'submitting' ? (
+              <><i className="fa fa-spinner fa-spin mr-2"></i> Processing...</>
+            ) : (
+              'Submit for Review'
+            )}
+          </button>
+          <p className="text-gray-500 text-[10px] mt-3 py-2 uppercase tracking-widest">
+            <i className="fa fa-lock mr-1"></i> Strictly Confidential under NDA
+          </p>
         </div>
-      </section>
+        </form>
+      </div>
+    ) : (
+      <div className="max-w-2xl mx-auto bg-carbon-medium p-12 rounded-2xl border border-accent-green text-center animate-slide-up shadow-[0_0_50px_rgba(160,249,0,0.1)]">
+        <div className="w-16 h-16 bg-accent-green/20 rounded-full flex items-center justify-center mx-auto mb-5">
+          <i className="fa fa-check text-3xl text-accent-green"></i>
+        </div>
+        <h3 className="text-2xl font-bold mb-4 uppercase tracking-[0.1em] text-white">RFQ Received</h3>
+        <p className="text-gray-400 mb-6 text-sm leading-relaxed">
+          We'll respond within 24 hours. Please save your reference:
+        </p>
+        <div className="bg-carbon-dark px-8 py-3 rounded-lg font-mono text-accent-green text-xl font-bold border border-carbon-light mb-8 inline-block">
+          REF: {refNumber}
+        </div>
+        <button onClick={() => setFormStatus('idle')}
+          className="text-gray-400 hover:text-accent-green font-bold text-xs uppercase tracking-widest transition-colors flex items-center justify-center gap-2 mx-auto">
+          <i className="fa fa-refresh"></i> Submit Another Request
+        </button>
+      </div>
+    )}
+  </div>
+</section>
 
       {/* --- 页脚 --- */}
       <footer className="bg-[#050505] border-t border-white/15 py-16">
