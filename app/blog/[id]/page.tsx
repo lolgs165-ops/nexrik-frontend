@@ -1,8 +1,9 @@
 // app/blog/[id]/page.tsx
+import { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowLeft, User, Clock, ShieldCheck, SearchCheck, MessageCircle, ChevronRight, MapPin, Mail } from 'lucide-react'
 
-// 1. 获取数据的核心函数（已修正环境变量 + ISR）
+// 1. 获取数据的核心函数
 async function getPost(slug: string) {
   const query = `
     query GetPostBySlug($slug: String!) {
@@ -20,12 +21,14 @@ async function getPost(slug: string) {
   `;
   
   try {
-    // 使用服务端环境变量，并开启 ISR 缓存
-    const res = await fetch(process.env.WORDPRESS_API_URL as string, {
+    // 优先使用环境变量，如果没有配置则默认使用你提供的线上真实 GraphQL 接口
+    const endpoint = process.env.WORDPRESS_API_URL || 'https://nexrik.com/graphql';
+    
+    const res = await fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ query, variables: { slug } }),
-      next: { revalidate: 3600 } // 每小时重新验证一次
+      next: { revalidate: 3600 } 
     });
     const json = await res.json();
     return { error: null, data: json.data?.posts?.nodes[0] };
@@ -34,7 +37,59 @@ async function getPost(slug: string) {
   }
 }
 
-// 2. 详情页主组件
+// 2. 🔥 核心新增：动态生成 SEO 与 GEO 专属名片
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const resolvedParams = await params;
+  const decodedSlug = decodeURIComponent(resolvedParams.id);
+  
+  const result = await getPost(decodedSlug);
+  const post = result.data;
+
+  // 如果文章不存在，返回基础的 404 Meta
+  if (!post) {
+    return {
+      title: 'Article Not Found | Nexrik LLC',
+      description: 'The requested technical article could not be found.',
+    };
+  }
+
+  // 清洗 WP 返回的摘要（去掉自带的 <p> 等 HTML 标签）
+  const plainExcerpt = post.excerpt 
+    ? post.excerpt.replace(/<[^>]*>?/gm, '').trim() 
+    : 'Engineering case studies and precision manufacturing insights from Nexrik LLC.';
+    
+  // 获取封面图（如果没有，建议后期换成一个你们公司默认的碳纤维机加工图片链接）
+  const ogImage = post.featuredImage?.node?.sourceUrl || 'https://nexrik.com/default-share-image.jpg';
+
+  return {
+    title: `${post.title} | Nexrik LLC`,
+    description: plainExcerpt,
+    openGraph: {
+      title: `${post.title} | Nexrik LLC`,
+      description: plainExcerpt,
+      url: `https://nexrik.com/blog/${decodedSlug}`,
+      siteName: 'Nexrik LLC',
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: post.title,
+        }
+      ],
+      locale: 'en_US',
+      type: 'article',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${post.title} | Nexrik LLC`,
+      description: plainExcerpt,
+      images: [ogImage],
+    },
+  };
+}
+
+// 3. 详情页主组件
 export default async function BlogPost({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
   const decodedSlug = decodeURIComponent(resolvedParams.id);
@@ -181,7 +236,7 @@ export default async function BlogPost({ params }: { params: Promise<{ id: strin
                 </div>
               </div>
 
-              {/* 模块 2：工程师直联通道 — 与模块 1 样式完全统一，按钮改为绿色高亮 */}
+              {/* 模块 2：工程师直联通道 */}
               <div className="bg-carbon-medium p-6 md:p-8 rounded-xl border border-carbon-light">
                 <h4 className="text-accent-green text-xs font-bold uppercase tracking-widest mb-6 border-b border-carbon-light pb-3">
                   Direct Engineer Line
@@ -230,7 +285,7 @@ export default async function BlogPost({ params }: { params: Promise<{ id: strin
         </div>
       </section>
 
-      {/* --- 页脚 (背景色已改为 bg-gray-950，与内容区区分) --- */}
+      {/* 页脚 */}
       <footer className="bg-[#050505] border-t border-white/15 py-16">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-14">
