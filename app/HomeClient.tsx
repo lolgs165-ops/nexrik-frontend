@@ -96,7 +96,7 @@ const handleRfqSubmit = async (e: React.FormEvent) => {
         });
 
         // 假设你给你的 R2 绑定了自定义域名（如果没有，先用默认的拼接方式）
-        return `https://${process.env.NEXT_PUBLIC_R2_DOMAIN || '你的R2自定义域名'}/${fileKey}`; 
+        return `https://${process.env.NEXT_PUBLIC_R2_DOMAIN || 'pub-b3e7ae5111494aa7ace9440a8bcd7749.r2.dev'}/${fileKey}`; 
       });
 
       // 等待所有图纸上传完成
@@ -140,6 +140,7 @@ const handleRfqSubmit = async (e: React.FormEvent) => {
       setFormStatus('success');
       setSelectedFiles([]);
       formRef.current?.reset();
+      document.getElementById('rfq')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } else {
       setFormStatus('error');
     }
@@ -534,22 +535,31 @@ const handleRfqSubmit = async (e: React.FormEvent) => {
                   <div><label className="block text-gray-300 mb-1.5 font-medium text-sm">Estimated Quantity *</label><input type="text" name="quantity" placeholder="e.g., 5 prototypes" required className="w-full bg-carbon-dark border border-carbon-light rounded-lg px-4 py-3 text-white focus:border-accent-green outline-none text-sm" /></div>
                 </div>
 
-                <div className="mb-8 p-6 bg-carbon-dark/30 rounded-xl border border-carbon-light/50">
-                  <h3 className="text-accent-green text-xs font-bold uppercase tracking-widest mb-4">Composite Preferences (Optional)</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {['Manufacturing Process', 'Surface Pattern', 'Material Grade', 'Surface Finish'].map((label, idx) => (
-                      <div key={idx}><label className="block text-gray-400 mb-1.5 text-xs">{label}</label>
-                        <div className="relative">
-                          <select className="w-full bg-carbon-dark border border-carbon-light rounded-lg px-3 py-2.5 text-white appearance-none focus:border-accent-green outline-none text-xs cursor-pointer">
-                            <option>Recommend for me / Not sure</option>
-                            {label === 'Surface Pattern' && ['3K Twill', '3K Plain', 'Forged', 'UD'].map(v => <option key={v}>{v}</option>)}
-                            {label === 'Surface Finish' && ['Glossy', 'Matte', 'Raw / Machined'].map(v => <option key={v}>{v}</option>)}
-                          </select>
-                          <i className="fa fa-angle-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none"></i>
-                        </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {['Manufacturing Process', 'Surface Pattern', 'Material Grade', 'Surface Finish'].map((label, idx) => (
+                    <div key={idx}>
+                      <label className="block text-gray-400 mb-1.5 text-xs">{label}</label>
+                      <div className="relative">
+                        <select className="w-full bg-carbon-dark border border-carbon-light rounded-lg px-3 py-2.5 text-white appearance-none focus:border-accent-green outline-none text-xs cursor-pointer">
+                          <option>Recommend for me / Not sure</option>
+                          {label === 'Manufacturing Process' && [
+                            'CNC Machining (Plates / Tubes)',
+                            'Autoclave Prepreg (Aerospace / High Strength)',
+                            'Compression Molding (Complex 3D / High Volume)',
+                            'Roll Wrapping (Tubes / Shafts)',
+                          ].map(v => <option key={v}>{v}</option>)}
+                          {label === 'Surface Pattern' && ['3K Twill', '3K Plain', 'Forged', 'UD'].map(v => <option key={v}>{v}</option>)}
+                          {label === 'Material Grade' && [
+                            'Standard Modulus (e.g., T300 / T700)',
+                            'Intermediate Modulus (e.g., T800)',
+                            'High Modulus (e.g., M40J / M55J)',
+                          ].map(v => <option key={v}>{v}</option>)}
+                          {label === 'Surface Finish' && ['Glossy', 'Matte', 'Raw / Machined'].map(v => <option key={v}>{v}</option>)}
+                        </select>
+                        <i className="fa fa-angle-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none"></i>
                       </div>
-                    ))}
-                  </div>
+                    </div>
+                  ))}
                 </div>
 
                 <div className="mb-8"><label className="block text-gray-300 mb-1.5 font-medium text-sm">Additional Details</label><textarea name="specs" rows={4} className="w-full bg-carbon-dark border border-carbon-light rounded-lg px-4 py-3 text-white focus:border-accent-green outline-none text-sm" placeholder="Tolerances, target budget, delivery dates..."></textarea></div>
