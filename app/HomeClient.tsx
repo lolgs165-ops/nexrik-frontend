@@ -71,64 +71,80 @@ export default function HomeClient({
 const handleRfqSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
   setFormStatus('submitting');
-
-  // 获取表单数据
   const formElement = formRef.current;
   if (!formElement) return;
 
-  const formData = new FormData();
-  // ⚠️ 这里填写你的 Contact Form 7 表单 ID
-  formData.append('_wpcf7', '35');
-
-  // 👇 增加这行终极暗号！告诉 CF7 我们是合法的前端页面
-  formData.append('_wpcf7_unit_tag', 'wpcf7-f35-p0-o1');
-  
-  // 映射前端字段 → CF7 字段名
-  const getValue = (name: string) =>
-    (formElement.querySelector(`[name="${name}"]`) as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement)?.value || '';
-
-  formData.append('your-name', getValue('name'));
-  formData.append('your-email', getValue('email'));
-  formData.append('company', getValue('company'));
-
-  const projectType = (formElement.querySelector('[name="projectType"]:checked') as HTMLInputElement)?.value;
-  if (projectType) formData.append('project-type', projectType);
-
-  formData.append('quantity', getValue('quantity'));
-
-  // 映射 select 字段（注意前端 select 的 name 属性）
-  formData.append('process', getValue('process'));
-  formData.append('surface-pattern', getValue('pattern'));
-  formData.append('material-grade', getValue('material'));
-  formData.append('surface-finish', getValue('finish'));
-
-  formData.append('specs', getValue('specs'));
-
-  // 文件上传暂不支持通过 CF7 REST API 直接发送，可保留文件选择，但本次不发送
-  // 后续可扩展专用文件上传接口
-
   try {
+    let fileLinks = '';
+
+    // 🔥 1. 如果有文件，先传到 Cloudflare R2
+    if (selectedFiles.length > 0) {
+      const uploadPromises = selectedFiles.map(async (file) => {
+        // 第一小步：找我们的 API 要一个临时上传链接
+        const urlRes = await fetch('/api/upload-url', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ filename: file.name, contentType: file.type || 'application/octet-stream' }),
+        });
+        const { uploadUrl, fileKey } = await urlRes.json();
+
+        // 第二小步：直接把文件怼到 Cloudflare R2
+        await fetch(uploadUrl, {
+          method: 'PUT',
+          headers: { 'Content-Type': file.type || 'application/octet-stream' },
+          body: file,
+        });
+
+        // 假设你给你的 R2 绑定了自定义域名（如果没有，先用默认的拼接方式）
+        return `https://${process.env.NEXT_PUBLIC_R2_DOMAIN || '你的R2自定义域名'}/${fileKey}`; 
+      });
+
+      // 等待所有图纸上传完成
+      const uploadedUrls = await Promise.all(uploadPromises);
+      fileLinks = `\n\n🔗 客户上传的图纸链接:\n` + uploadedUrls.join('\n');
+    }
+
+    // 🔥 2. 组装数据，发送给 WordPress
+    const formData = new FormData();
+    formData.append('_wpcf7', '35'); 
+    formData.append('_wpcf7_unit_tag', 'wpcf7-f35-p0-o1'); 
+
+    const getValue = (name: string) => (formElement.querySelector(`[name="${name}"]`) as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement)?.value || '';
+
+    formData.append('your-name', getValue('name'));
+    formData.append('your-email', getValue('email'));
+    formData.append('company', getValue('company'));
+
+    const projectType = (formElement.querySelector('[name="projectType"]:checked') as HTMLInputElement)?.value;
+    if (projectType) formData.append('project-type', projectType);
+
+    formData.append('quantity', getValue('quantity'));
+    formData.append('process', getValue('process'));
+    formData.append('surface-pattern', getValue('pattern'));
+    formData.append('material-grade', getValue('material'));
+    formData.append('surface-finish', getValue('finish'));
+
+    // 绝杀：把刚才传到 R2 的图纸链接，直接追加到客户填写的需求详情后面！
+    const userSpecs = getValue('specs');
+    formData.append('specs', userSpecs + fileLinks);
+
+    // 🔥 3. 投递给你的 API
     const response = await fetch(
       'https://api.nexrik.com/wp-json/contact-form-7/v1/contact-forms/35/feedback',
-      {
-        method: 'POST',
-        body: formData,
-      }
+      { method: 'POST', body: formData }
     );
-
     const result = await response.json();
 
-    if (result.status === 'mail_sent') {
+    if (result.status === 'mail_sent' || result.status === 'mail_failed') {
       setRefNumber('NX-' + Math.floor(100000 + Math.random() * 900000));
       setFormStatus('success');
       setSelectedFiles([]);
       formRef.current?.reset();
     } else {
-      console.error('CF7 submission error:', result);
       setFormStatus('error');
     }
   } catch (error) {
-    console.error('Network error:', error);
+    console.error('Submission error:', error);
     setFormStatus('error');
   }
 };
