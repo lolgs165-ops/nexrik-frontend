@@ -119,9 +119,9 @@ const handleRfqSubmit = async (e: React.FormEvent) => {
     if (projectType) formData.append('project-type', projectType);
 
     formData.append('quantity', getValue('quantity'));
-    formData.append('process', getValue('process'));
+    //formData.append('process', getValue('process'));
     formData.append('surface-pattern', getValue('pattern'));
-    formData.append('material-grade', getValue('material'));
+    //formData.append('material-grade', getValue('material'));
     formData.append('surface-finish', getValue('finish'));
 
     // 绝杀：把刚才传到 R2 的图纸链接，直接追加到客户填写的需求详情后面！
@@ -536,24 +536,13 @@ const handleRfqSubmit = async (e: React.FormEvent) => {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {['Manufacturing Process', 'Surface Pattern', 'Material Grade', 'Surface Finish'].map((label, idx) => (
+                  {['Surface Pattern', 'Surface Finish'].map((label, idx) => (
                     <div key={idx}>
                       <label className="block text-gray-400 mb-1.5 text-xs">{label}</label>
                       <div className="relative">
                         <select className="w-full bg-carbon-dark border border-carbon-light rounded-lg px-3 py-2.5 text-white appearance-none focus:border-accent-green outline-none text-xs cursor-pointer">
                           <option>Recommend for me / Not sure</option>
-                          {label === 'Manufacturing Process' && [
-                            'CNC Machining (Plates / Tubes)',
-                            'Autoclave Prepreg (Aerospace / High Strength)',
-                            'Compression Molding (Complex 3D / High Volume)',
-                            'Roll Wrapping (Tubes / Shafts)',
-                          ].map(v => <option key={v}>{v}</option>)}
                           {label === 'Surface Pattern' && ['3K Twill', '3K Plain', 'Forged', 'UD'].map(v => <option key={v}>{v}</option>)}
-                          {label === 'Material Grade' && [
-                            'Standard Modulus (e.g., T300 / T700)',
-                            'Intermediate Modulus (e.g., T800)',
-                            'High Modulus (e.g., M40J / M55J)',
-                          ].map(v => <option key={v}>{v}</option>)}
                           {label === 'Surface Finish' && ['Glossy', 'Matte', 'Raw / Machined'].map(v => <option key={v}>{v}</option>)}
                         </select>
                         <i className="fa fa-angle-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none"></i>
